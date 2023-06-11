@@ -95,8 +95,7 @@ class mongo_server:
         money = client_input[6]
         points = client_input[7]
         print(client_input)
-        db = {"_id": user_id,
-              "mail": u_mail, "name": u_name, "password": u_pass, "address": address, "phone": phone,
+        db = {"_id": user_id, "mail": u_mail, "name": u_name, "password": u_pass, "address": address, "phone": phone,
               "age": age, "money": money, "points": points}
 
         col1.insert_one(db)
@@ -104,7 +103,6 @@ class mongo_server:
     def login_check(self, c_choice, client_input):
         print("login checking")
         l_email = client_input[1]
-        # print(l_email)
         l_password = client_input[2]
         flag = -1
         sms = ''
