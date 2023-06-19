@@ -254,30 +254,6 @@ class mongo_server:
                 err = bytes(str(err), 'utf-8')
                 c_choice.send(err)
 
-    # def c_exist(self, c_choice, client_input):
-    #     print("testing candidate exit")
-    #     u_email = client_input[1]
-    #     u_name = client_input[2]
-    #     flag = -1
-    #     if col.count_documents({}) == 0:
-    #         str_data = bytes("0", 'utf-8')
-    #         c_choice.send(str_data)
-    #     else:
-    #         try:
-    #             for i in col.find({}, {"_id": 0, "mail": 1, "name": 1}):
-    #                 if i["mail"] == u_email or i["name"] == u_name:
-    #                     flag = 1
-    #                     break
-    #             if flag == 1:
-    #                 str_data = bytes("1", 'utf-8')
-    #                 c_choice.send(str_data)
-    #             else:
-    #                 str_data = bytes("0", 'utf-8')
-    #                 c_choice.send(str_data)
-    #         except Exception as err:
-    #             err = bytes(str(err), 'utf-8')
-    #             c_choice.send(err)
-
 
 if __name__ == "__main__":
     mongo_server()
