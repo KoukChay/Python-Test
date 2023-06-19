@@ -13,36 +13,43 @@ class mongo_client:
         return client
 
     def check_input(self):
-        print("==>Enter <gad> to get Candidates Ranks.\n==>Enter <reg> to Register\n==>Enter <login> to Login")
+        print(
+            "==>Enter <gad> to get Candidates Ranks.\n==>Enter <reg u> for User Register\n==>Enter <reg c> for "
+            "Candidate Register\n==>Enter <login> to Login as voter\n==>Enter <clogin> to Login as candidate")
         sms = input("Enter your choice: ")
         try:
             if sms == "gad":
                 self.ranked_list()
-            elif sms == "reg":
-                self.register(sms)
+            elif sms == "ureg":
+                self.u_register(sms)
+            elif sms == "creg":
+                self.c_register(sms)
             elif sms == "login":
                 self.login()
+            elif sms == "clogin":
+                self.candidate_login()
             else:
                 print("Wrong option, Try again!")
         except Exception as err:
             print(err)
             self.check_input()
 
-    def register(self, sms):
-        u_name = '__'
-        print("\n" + "welcome to registration page".upper().center(80))
+    def c_register(self, sms):
+        c_name = '__'
+        print("\n" + "welcome to candidate registration page".upper().center(80))
         while True:
-            u_mail = input("%-30s: " % "Enter your mail to register")
+            c_mail = input("%-30s: " % "Enter your mail to register")
+            email_check = self.email_validation(c_mail)
 
-            if not u_mail.endswith("@gmail.com"):
-                print("Mail must be @gmail.com! Please try again.")
+            if email_check == 0:
+                print("Mail you entered is Invalid! Please try again.")
                 while True:
                     try:
                         opt = int(input("==>Press 1 to try another.\n==>Press 2 to go to main"
                                         "page.\n==>"))
 
                         if opt == 1:
-                            self.register(sms)
+                            self.c_register(sms)
                             break
                         elif opt == 2:
                             self.check_input()
@@ -52,6 +59,126 @@ class mongo_client:
                     except ValueError:
                         print("Press only Number!")
             else:
+                break
+
+        mail_check = self.user_exist(c_mail, c_name, sms)
+        if mail_check is not None:
+            print(f'\nEmail <{c_mail}> already exit!')
+
+
+            while True:
+                try:
+                    opt = int(input(
+                        "==>Press 1 to try another.\n==>Press 2 to login with this Email.\n==>Press 3 to go to main "
+                        "page.\n==>"))
+
+                    if opt == 1:
+                        self.c_register(sms)
+                        break
+                    elif opt == 2:
+                        self.login()
+                        break
+                    elif opt == 3:
+                        self.check_input()
+                        break
+                    else:
+                        print("Wrong option. Please Try Again!")
+                except ValueError:
+                    print("Press only Number!")
+
+        else:
+
+            name = True
+            while name:
+                f_name = input("%-30s: " % "Enter your First Name")
+                l_name = input("%-30s: " % "Enter your Last Name")
+                c_name = f_name.title() + ' ' + l_name.title()
+                name_check = self.user_exist(c_mail, c_name, sms)
+                if name_check is not None:
+                    print(f'\nName <{c_name}> already exit!')
+                    while True:
+                        try:
+                            opt = int(input("==>Press 1 to try another.\n==>Press 2 to login with this name."
+                                            "\n==>Press 3 to go to main "
+                                            "page.\n==>"))
+                            if opt == 1:
+                                break
+                            elif opt == 2:
+                                name = False
+                                self.login()
+                                break
+                            elif opt == 3:
+                                self.check_input()
+                                break
+                            else:
+                                print("Wrong option. Please Try Again!")
+                        except ValueError:
+                            print("Press only Number!")
+                else:
+                    break
+
+            while True:
+                u_pass = input("%-30s: " % "Enter password to register")
+                c_pass = input("%-30s: " % "Retype password again to confirm")
+                if u_pass == c_pass:
+                    break
+                else:
+                    print("Passwords do not match! Try again.")
+
+            while True:
+                try:
+                    phone = int(input("%-30s: " % "Enter your phone"))
+                    break
+                except ValueError:
+                    print("Fill only Numbers. please try again.")
+            while True:
+                try:
+                    age = int(input("%-30s: " % "Enter your age(Must be 18+)"))
+                    if age >= 18:
+                        break
+                    else:
+                        print("Age must be 18 and over.")
+                except ValueError:
+                    print("Age must be only Numbers. Please try again.")
+
+            mark = 0
+            points = 0
+            db = c_mail + ':' + c_name + ':' + u_pass + ':' + str(phone) + ':' + str(age) + ':' + str(
+                mark) + ':' + str(points)
+
+            db = bytes(db, "utf-8")
+            client = self.run_client()
+            client.send(db)
+            print("Registration Success!\n".center(80))
+            client.close()
+            self.check_input()
+
+    def u_register(self, sms):
+        u_name = '__'
+        print("\n" + "welcome to voter registration page".upper().center(80))
+        while True:
+            u_mail = input("%-30s: " % "Enter your mail to register")
+            email_check = self.email_validation(u_mail)
+
+            if email_check == 0:
+                print("Mail you entered is Invalid! Please try again.")
+                while True:
+                    try:
+                        opt = int(input("==>Press 1 to try another.\n==>Press 2 to go to main"
+                                        "page.\n==>"))
+
+                        if opt == 1:
+                            self.u_register(sms)
+                            break
+                        elif opt == 2:
+                            self.check_input()
+                            return
+                        else:
+                            print("Wrong option. Please Try Again!")
+                    except ValueError:
+                        print("Press only Number!")
+            else:
+
                 break
 
         mail_check = self.user_exist(u_mail, u_name, sms)
@@ -65,7 +192,7 @@ class mongo_client:
                         "page.\n==>"))
 
                     if opt == 1:
-                        self.register(sms)
+                        self.u_register(sms)
                         break
                     elif opt == 2:
                         self.login()
@@ -152,17 +279,19 @@ class mongo_client:
         self.check_input()
 
     def login(self):
+        print("\n" + "welcome to voter login page".upper().center(80))
         check = True
         try:
             while check:
                 while True:
                     l_mail = input("%-30s: " % "Enter your Email to Login")
-                    if l_mail.endswith("@gmail.com"):
+                    email_check = self.email_validation(l_mail)
+                    if email_check == 1:
                         break
                     elif l_mail == "1":
                         self.check_input()
                     else:
-                        print("Mail must be @gmail.com! Please try again.")
+                        print("Mail you entered is Invalid! Please try again.")
 
                 l_pass = input("Enter your password to login: ")
                 client = self.run_client()
@@ -182,6 +311,84 @@ class mongo_client:
         except Exception as err:
             print(err)
         self.check_input()
+
+    def candidate_login(self):
+        print("\n" + "welcome to candidate login page".upper().center(80))
+        check = True
+        try:
+            while check:
+                while True:
+                    l_mail = input("%-30s: " % "Enter your Email to Login")
+                    email_check = self.email_validation(l_mail)
+                    if email_check == 1:
+                        break
+                    elif l_mail == "1":
+                        self.check_input()
+                    else:
+                        print("Mail you entered is Invalid! Please try again.")
+
+                l_pass = input("Enter your password to login: ")
+                client = self.run_client()
+                sms = f"clogin:{l_mail}:{l_pass}".encode('utf-8')
+                client.send(sms)
+                r_data = client.recv(1024).decode("utf-8").split(",")
+
+                if r_data[0] == '1':
+                    print("Email or Password is Invalid. Please Try Again! OR press (1) to exit.")
+                    check = True
+
+                else:
+
+                    self.candidate_profile_page(r_data)
+
+                client.close()
+        except Exception as err:
+            print(err)
+        self.check_input()
+
+    def candidate_profile_page(self, r_data):
+        name = r_data[0]
+        client = self.run_client()
+        sms = f"get_cdata:{name}".encode('utf-8')
+        client.send(sms)
+        n_data = client.recv(1024).decode("utf-8").split(",")
+
+        money = int(n_data[1])
+        points = int(n_data[2])
+        print("\n" + "welcome to profile page".upper().center(80))
+        print(f'Welcome {name} (Your money: ${money},'
+              f' Your points: {points})')
+        try:
+            c_pointa = int(input("%-30s: " % "Enter amount of point you want to change<1point = $5>"))
+            if points >= c_pointa:
+                points -= c_pointa
+                money += (c_pointa * 5)
+                print(f'Congratulation! You own now ${money}')
+
+                sms = f"c_up:{money}:{points}:{name}".encode('utf-8')
+                client = self.run_client()
+                client.send(sms)
+                try:
+                    while True:
+                        opt = int(input("Press <1> to change more OR press <2> to go Main page."))
+                        if opt == 1:
+                            self.candidate_profile_page(r_data)
+                            break
+                        elif opt == 2:
+                            self.check_input()
+                            break
+                        else:
+                            print("Invalid Option! Please try again.")
+
+                except ValueError:
+                    print("Invalid option! Press only Numbers.")
+
+            else:
+                print("Not enough points to change money.")
+                self.check_input()
+        except ValueError:
+            print("Amount must be only Numbers!")
+
 
     def profile_page(self, r_data):
         name = r_data[0]
@@ -231,7 +438,7 @@ class mongo_client:
               f' Your points: {str(points)})')
         for key, value in data_dict.items():
             print(f'ID: {key} - Name: {value["name"]} - '
-                  f'Current Vote Mark: {value["v_mark"]} - Voting Points: {value["v_points"]}')
+                  f'Current Vote Mark: {value["v_mark"]} - Voting Points: {value["v_points"]} - Voter List: {value["voter"]}')
 
         while True:
             try:
@@ -325,6 +532,42 @@ class mongo_client:
                         print("Invalid Option! Please enter 'y' or 'n'")
         except ValueError:
             print("Amount must be only Numbers!")
+
+    def email_validation(self, u_mail):
+        global domain, mail_name, j
+        length = len(u_mail)
+        flag = -1
+        d_flag=-1
+        while flag == -1:
+
+            for i in range(length):
+                if u_mail[i] == '@':
+                    mail_name = u_mail[0:i]
+                    domain = u_mail[i + 1:]
+                    j = 1
+                    break
+                else:
+                    j = 0
+            if j == 1:
+                if domain in ["gmail.com", "yahoo.com", "mail.ru", "outlook.com", "apple.com"]:
+                    d_flag = 1
+                else:
+                    d_flag = 0
+
+                for char in mail_name:
+                    n = ord(char)
+                    if 31 < n < 48 or 57 < n < 64 or 90 < n < 97 or 122 < n < 127:
+                        flag = 0
+                        break
+                    else:
+                        flag = 1
+            else:
+                flag = 0
+
+        if flag == 1 and d_flag ==1:
+            return 1
+        else:
+            return 0
 
     def user_exist(self, u_mail, u_name, sms):
         client = self.run_client()

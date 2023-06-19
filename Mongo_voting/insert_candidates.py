@@ -1,16 +1,20 @@
-import pymongo
+global point
+global name
+global money
 
-connection = pymongo.MongoClient("localhost", 27017)
-V_data = connection["v_db"]
-collections = V_data["candidates"]
+try:
+    c_pointa = int(input("%-30s: " % "Enter amount of point you want to change<1point = $5>"))
+    if point >= c_pointa:
+        point -= c_pointa
+        money += (c_pointa * 5)
+        print(f'Congratulation! You own now ${money}')
 
-if __name__ == "__main__":
-    candidates = [
-        {"_id": 1, "name": "James", "v_mark": 0, "v_points": 0, "voter": []},
-        {"_id": 2, "name": "John", "v_mark": 0, "v_points": 0, "voter": []},
-        {"_id": 3, "name": "Rooney", "v_mark": 0, "v_points": 0, "voter": []},
-        {"_id": 4, "name": "Ronaldo", "v_mark": 0, "v_points": 0, "voter": []},
-        {"_id": 5, "name": "Messi", "v_mark": 0, "v_points": 0, "voter": []}
-    ]
+        sms = f"up:{money}:{point}:{name}".encode('utf-8')
+        client = self.run_client()
+        client.send(sms)
+        self.profile_page(r_data)
+    else:
+        print("Not enough point to change money.")
 
-    collections.insert_many(candidates)
+except ValueError:
+    print("Amount must be only Numbers!")

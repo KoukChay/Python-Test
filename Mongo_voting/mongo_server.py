@@ -36,11 +36,23 @@ class mongo_server:
                     print("Received Data: ", client_input[0])
                     if client_input[0] == "gad":
                         self.get_all_data(c_choice)
-                    elif client_input[0] == "reg" or len(client_input) == 8:
+                    elif client_input[0] == "ureg" or len(client_input) == 8:
                         loop = True
                         while loop:
                             if len(client_input) > 7:
-                                self.register(client_input)
+                                self.u_register(client_input)
+                                loop = False
+                            elif len(client_input) == 3:
+                                self.user_exist(c_choice, client_input)
+                                loop = False
+                            else:
+                                print("Insufficient data for registration.")
+                                loop = False
+                    elif client_input[0] == "creg" or len(client_input) == 7:
+                        loop = True
+                        while loop:
+                            if len(client_input) > 6:
+                                self.c_register(client_input)
                                 loop = False
                             elif len(client_input) == 3:
                                 self.user_exist(c_choice, client_input)
@@ -50,10 +62,16 @@ class mongo_server:
                                 loop = False
                     elif client_input[0] == "login":
                         self.login_check(c_choice, client_input)
+                    elif client_input[0] == "clogin":
+                        self.c_login_check(c_choice, client_input)
                     elif client_input[0] == "up":
                         self.user_update(client_input)
+                    elif client_input[0] == "c_up":
+                        self.c_money_update(client_input)
                     elif client_input[0] == "get_udata":
                         self.get_udata(c_choice, client_input)
+                    elif client_input[0] == "get_cdata":
+                        self.get_cdata(c_choice, client_input)
                     elif client_input[0] == "candi_up":
                         self.candidate_update(client_input)
                     else:
@@ -67,11 +85,12 @@ class mongo_server:
 
     def get_all_data(self, c_choice):
         data: dict = {}
-        for i in col.find({}, {"_id": 0, "name": 1, "v_mark": 1, "v_points": 1, "voter": 1}):
-            _id = len(data) + 1
-            data_form = {"name": i.get("name"), "v_mark": i.get("v_mark"), "v_points": i.get("v_points"),
-                         "voter": i.get("voter")}
-            data.update({_id: data_form})
+        for i in col.find({}, {"_id": 1, "name": 1, "v_mark": 1, "v_points": 1, "voter": 1}):
+            # _id = len(data) + 1
+            # print(i["_id"])
+            data_form = {"name": i["name"], "v_mark": i["v_mark"], "v_points": i["v_points"],
+                         "voter": i["voter"]}
+            data.update({i["_id"]:data_form})
         print(data)
         str_data = json.dumps(data)
         str_data = bytes(str_data, "utf-8")
@@ -83,8 +102,41 @@ class mongo_server:
             sms = f"{i['name']},{i['money']},{i['points']}"
             str_data = bytes(sms, 'utf-8')
             c_choice.send(str_data)
+    def get_cdata(self, c_choice, client_input):
+        name = client_input[1]
+        for i in col.find({"name": name}, {"_id": 1, "mail": 1, "name": 1, "password": 1, "money": 1, "v_points": 1}):
+            sms = f"{i['name']},{i['money']},{i['v_points']}"
+            str_data = bytes(sms, 'utf-8')
+            c_choice.send(str_data)
+    def c_register(self, client_input):
 
-    def register(self, client_input):
+        c_id = [0]
+
+        for i in col.find({}, {"_id": 1}):
+            print(i["_id"])
+            c_id.append(i["_id"])
+            print(c_id)
+        if c_id[-1] == 0:
+            id = 1
+        else:
+            id = c_id[-1] + 1
+
+        u_mail = client_input[0]
+        u_name = client_input[1]
+        u_pass = client_input[2]
+        phone = client_input[3]
+        age = client_input[4]
+        mark = client_input[5]
+        points = client_input[6]
+        money = 0
+        voter = []
+        print(client_input)
+        db = {"_id": id, "mail": u_mail, "name": u_name, "password": u_pass, "phone": int(phone),
+              "age": int(age), "v_mark": int(mark), "v_points": int(points),"money" : int(money), "voter": voter}
+
+        col.insert_one(db)
+
+    def u_register(self, client_input):
         user_id = random.randint(10, 10000)
         u_mail = client_input[0]
         u_name = client_input[1]
@@ -95,8 +147,8 @@ class mongo_server:
         money = client_input[6]
         points = client_input[7]
         print(client_input)
-        db = {"_id": user_id, "mail": u_mail, "name": u_name, "password": u_pass, "address": address, "phone": phone,
-              "age": age, "money": money, "points": points}
+        db = {"_id": user_id, "mail": u_mail, "name": u_name, "password": u_pass, "address": address, "phone": int(phone),
+              "age": int(age), "money": int(money), "points": int(points)}
 
         col1.insert_one(db)
 
@@ -125,11 +177,43 @@ class mongo_server:
             str_data = bytes(sms, 'utf-8')
             c_choice.send(str_data)
 
+    def c_login_check(self, c_choice, client_input):
+        print("c_login checking")
+        l_email = client_input[1]
+        l_password = client_input[2]
+        flag = -1
+        sms = ''
+        name = ''
+        for i in col.find({}, {"_id": 0, "mail": 1, "name": 1, "password": 1, "money": 1, "v_points": 1}):
+            if i["mail"] == l_email and i["password"] == l_password:
+                print('user_found')
+                name = f"{i['name']},{i['money']},{i['v_points']}"
+                flag = 1
+                break
+            else:
+                print('user_notfound')
+                sms = '1'
+
+        if flag == 1:
+            str_data = bytes(name, 'utf-8')
+            c_choice.send(str_data)
+
+        else:
+            str_data = bytes(sms, 'utf-8')
+            c_choice.send(str_data)
+
     def user_update(self, client_input):
         n_money = client_input[1]
         n_points = client_input[2]
         name = client_input[3]
-        col1.update_one({"name": name}, {"$set": {"money": n_money, "points": n_points}})
+        col1.update_one({"name": name}, {"$set": {"money": int(n_money), "points": int(n_points)}})
+        print("u_data updated")
+
+    def c_money_update(self, client_input):
+        n_money = client_input[1]
+        n_points = client_input[2]
+        name = client_input[3]
+        col.update_one({"name": name}, {"$set": {"money": int(n_money), "v_points": int(n_points)}})
         print("u_data updated")
 
     def candidate_update(self, client_input):
@@ -155,6 +239,11 @@ class mongo_server:
                     if i["mail"] == u_email or i["name"] == u_name:
                         flag = 1
                         break
+                    else:
+                        for i in col.find({}, {"_id": 0, "mail": 1, "name": 1}):
+                            if i["mail"] == u_email or i["name"] == u_name:
+                                flag = 1
+                                break
                 if flag == 1:
                     str_data = bytes("1", 'utf-8')
                     c_choice.send(str_data)
@@ -164,6 +253,30 @@ class mongo_server:
             except Exception as err:
                 err = bytes(str(err), 'utf-8')
                 c_choice.send(err)
+
+    # def c_exist(self, c_choice, client_input):
+    #     print("testing candidate exit")
+    #     u_email = client_input[1]
+    #     u_name = client_input[2]
+    #     flag = -1
+    #     if col.count_documents({}) == 0:
+    #         str_data = bytes("0", 'utf-8')
+    #         c_choice.send(str_data)
+    #     else:
+    #         try:
+    #             for i in col.find({}, {"_id": 0, "mail": 1, "name": 1}):
+    #                 if i["mail"] == u_email or i["name"] == u_name:
+    #                     flag = 1
+    #                     break
+    #             if flag == 1:
+    #                 str_data = bytes("1", 'utf-8')
+    #                 c_choice.send(str_data)
+    #             else:
+    #                 str_data = bytes("0", 'utf-8')
+    #                 c_choice.send(str_data)
+    #         except Exception as err:
+    #             err = bytes(str(err), 'utf-8')
+    #             c_choice.send(err)
 
 
 if __name__ == "__main__":
