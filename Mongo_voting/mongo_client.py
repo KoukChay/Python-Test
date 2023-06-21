@@ -14,7 +14,7 @@ class mongo_client:
 
     def check_input(self):
         print(
-            "==>Enter <gad> to get Candidates Ranks.\n==>Enter <reg u> for User Register\n==>Enter <reg c> for "
+            "==>Enter <gad> to get Candidates Ranks.\n==>Enter <ureg> for User Register\n==>Enter <creg> for "
             "Candidate Register\n==>Enter <login> to Login as voter\n==>Enter <clogin> to Login as candidate")
         sms = input("Enter your choice: ")
         try:
@@ -64,7 +64,6 @@ class mongo_client:
         mail_check = self.user_exist(c_mail, c_name, sms)
         if mail_check is not None:
             print(f'\nEmail <{c_mail}> already exit!')
-
 
             while True:
                 try:
@@ -389,7 +388,6 @@ class mongo_client:
         except ValueError:
             print("Amount must be only Numbers!")
 
-
     def profile_page(self, r_data):
         name = r_data[0]
         client = self.run_client()
@@ -406,12 +404,16 @@ class mongo_client:
             print("You need at least 200 points to vote. Buy first!")
         try:
             while True:
-                opt = int(input("Press 1 to buy points to vote\nPress 2 to vote\nPress 3 to go Main Page\n==>"))
+                opt = int(input(
+                    "Press 1 to buy points to vote\nPress 2 to vote\nPress 3 to transfer your points\nPress 4 to go "
+                    "Main Page\n==>"))
                 if opt == 1:
                     self.point_shop(r_data)
                 elif opt == 2:
                     self.voting_page(r_data)
                 elif opt == 3:
+                    self.transfer_point(r_data, n_data)
+                elif opt == 4:
                     self.check_input()
 
                 else:
@@ -438,7 +440,7 @@ class mongo_client:
               f' Your points: {str(points)})')
         for key, value in data_dict.items():
             print(f'ID: {key} - Name: {value["name"]} - '
-                  f'Current Vote Mark: {value["v_mark"]} - Voting Points: {value["v_points"]} - Voter List: {value["voter"]}')
+                  f'Current Vote Mark: {value["v_mark"]} - Voting Points: {value["v_points"]}')
 
         while True:
             try:
@@ -468,14 +470,12 @@ class mongo_client:
                         v_mark = candidate["v_mark"]
                         candidate["v_points"] += 200
                         v_points = candidate["v_points"]
-                        voter = candidate["voter"]
-                        voter.append(name)
                         points -= 200
                         u_sms = f"up:{money}:{points}:{name}".encode('utf-8')
                         client = self.run_client()
                         client.send(u_sms)
 
-                        sms = f"candi_up:{v_mark}:{v_points}:{voter}:{v_id}".encode('utf-8')
+                        sms = f"candi_up:{v_mark}:{v_points}:{name}:{v_id}".encode('utf-8')
                         client = self.run_client()
                         client.send(sms)
 
@@ -533,11 +533,75 @@ class mongo_client:
         except ValueError:
             print("Amount must be only Numbers!")
 
+    def transfer_point(self, r_data, n_data):
+        print(r_data)
+        name = r_data[0]
+        points = int(n_data[2])
+        mail = n_data[3]
+        client = self.run_client()
+        sms = f"get user data".encode("utf-8")
+        client.send(sms)
+        from_server = client.recv(1024)
+        udata_dict = json.loads(from_server.decode('utf-8'))
+        print("\n" + "welcome to transfer page".upper().center(80))
+        print(f'Welcome {name} (Your points: {points})')
+        for key, value in udata_dict.items():
+            print(f'Name: {value["name"]} - Email: {value["mail"]} - Voting Points: {value["points"]}')
+        try:
+            while True:
+                mailchk = 0
+                umail = input("Enter email you want to Transfer: ")
+                if umail == mail:
+                    print("You can't transfer your own account")
+                else:
+                    for key, value in udata_dict.items():
+                        if value["mail"] == umail:
+                            mailchk = 1
+                            break
+                    if mailchk == 1:
+                        if points > 0:
+                            client = self.run_client()
+                            sms = f"get_udata_mail:{umail}".encode("utf-8")
+                            client.send(sms)
+                            udata = client.recv(1024).decode('utf-8').split(',')
+                            u_name = udata[0]
+                            u_points = int(udata[2])
+                            print(f"\nName: {u_name} - Mail: {umail} - Points: {u_points}")
+
+                            while True:
+                                try:
+                                    t_point = int(input("Enter amount of point you want to transfer: "))
+                                    if t_point <= points:
+                                        u_points += t_point
+                                        points -= t_point
+                                        print(
+                                            f"Transfer Done!\n{u_name}'s point is {u_points} and Your point is {points} now")
+                                        sms = f'u_p_up:{points}:{u_points}:{name}:{u_name}'.encode('utf-8')
+                                        client = self.run_client()
+                                        client.send(sms)
+                                        self.profile_page(r_data)
+                                        break
+                                    else:
+                                        print("You don't have enough point to transfer. Buy first!")
+                                        self.profile_page(r_data)
+                                        break
+                                except Exception as err:
+                                    print(err, "\nEnter only Number!")
+
+                        else:
+                            print("You don't have any points to transfer. Buy first!")
+                            self.profile_page(r_data)
+                    else:
+                        print("Email you entered is Invalid! Please try again.")
+        except Exception as err:
+            print(err)
+        client.close()
+
     def email_validation(self, u_mail):
         global domain, mail_name, j
         length = len(u_mail)
         flag = -1
-        d_flag=-1
+        d_flag = -1
         while flag == -1:
 
             for i in range(length):
@@ -564,7 +628,7 @@ class mongo_client:
             else:
                 flag = 0
 
-        if flag == 1 and d_flag ==1:
+        if flag == 1 and d_flag == 1:
             return 1
         else:
             return 0
