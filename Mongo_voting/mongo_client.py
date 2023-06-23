@@ -405,7 +405,8 @@ class mongo_client:
         try:
             while True:
                 opt = int(input(
-                    "Press 1 to buy points to vote\nPress 2 to vote\nPress 3 to transfer your points\nPress 4 to go "
+                    "Press 1 to buy points to vote\nPress 2 to vote\nPress 3 to transfer your points\nPress 4 to "
+                    "change your information\nPress 5 to go "
                     "Main Page\n==>"))
                 if opt == 1:
                     self.point_shop(r_data)
@@ -414,6 +415,8 @@ class mongo_client:
                 elif opt == 3:
                     self.transfer_point(r_data, n_data)
                 elif opt == 4:
+                    self.change_info(sms, r_data, n_data)
+                elif opt == 5:
                     self.check_input()
 
                 else:
@@ -534,6 +537,7 @@ class mongo_client:
             print("Amount must be only Numbers!")
 
     def transfer_point(self, r_data, n_data):
+        global u_name, u_points
         print(r_data)
         name = r_data[0]
         points = int(n_data[2])
@@ -556,16 +560,12 @@ class mongo_client:
                 else:
                     for key, value in udata_dict.items():
                         if value["mail"] == umail:
+                            u_name = value["name"]
+                            u_points = value["points"]
                             mailchk = 1
                             break
                     if mailchk == 1:
                         if points > 0:
-                            client = self.run_client()
-                            sms = f"get_udata_mail:{umail}".encode("utf-8")
-                            client.send(sms)
-                            udata = client.recv(1024).decode('utf-8').split(',')
-                            u_name = udata[0]
-                            u_points = int(udata[2])
                             print(f"\nName: {u_name} - Mail: {umail} - Points: {u_points}")
 
                             while True:
@@ -596,6 +596,116 @@ class mongo_client:
         except Exception as err:
             print(err)
         client.close()
+
+    def change_info(self, sms, r_data, n_data):
+        print("\nSelect to change your information.")
+        name = n_data[0]
+        mail = n_data[3]
+        password = n_data[4]
+        while True:
+            try:
+                opt = int(input(
+                    "Press 1 to change your Email\nPress 2 to change your Name\nPress 3 to change your "
+                    "Password\nPress 4 to go Back\n==>"))
+                if opt == 1:
+
+                    while True:
+                        n_mail = input("Enter New email : ")
+                        if n_mail == "1":
+                            self.profile_page(r_data)
+                            break
+                        email_check = self.email_validation(n_mail)
+
+                        if email_check == 0:
+                            print("Mail you entered is Invalid! Please try again <OR> Press 1 to cancel!")
+
+                        else:
+
+                            break
+
+                    mail_check = self.user_exist(n_mail, None, sms="ureg")
+
+                    if mail_check is not None:
+                        print(f'\nEmail <{n_mail}> already exit!')
+                        while True:
+                            try:
+                                opt = int(input("==>Press 1 to try another.\n==>Press 2 to cancel\n==>"))
+
+                                if opt == 1:
+                                    self.change_info(sms, r_data, n_data)
+                                    break
+                                elif opt == 2:
+                                    self.profile_page(r_data)
+                                    break
+                                else:
+                                    print("Wrong option. Please Try Again!")
+                            except ValueError:
+                                print("Press only Number!")
+
+                    else:
+                        tosend = f"info_change:{name}:{n_mail}:{password}:{name}".encode('utf-8')
+                        client = self.run_client()
+                        client.send(tosend)
+                        print(f"Your new Email {n_mail} is updated!Login Back")
+                        self.login()
+
+                elif opt == 2:
+
+                    while True:
+                        f_name = input("%-30s: " % "Enter your First Name")
+                        l_name = input("%-30s: " % "Enter your Last Name")
+                        n_name = f_name.title() + ' ' + l_name.title()
+                        name_check = self.user_exist(None, n_name, sms="ureg")
+                        if name_check is not None:
+                            print(f'\nName <{n_name}> already exit!')
+                            while True:
+                                try:
+                                    opt = int(input("==>Press 1 to try another.\n==>Press 2 to cancel\n==>"))
+
+                                    if opt == 1:
+                                        self.change_info(sms, r_data, n_data)
+                                        break
+                                    elif opt == 2:
+                                        self.profile_page(r_data)
+                                        break
+                                    else:
+                                        print("Wrong option. Please Try Again!")
+                                except ValueError:
+                                    print("Press only Number!")
+                        else:
+                            tosend = f"info_change:{n_name}:{mail}:{password}:{name}".encode('utf-8')
+                            client = self.run_client()
+                            client.send(tosend)
+                            print(f"Your new Name {n_name} is updated! Login back")
+                            self.login()
+
+                elif opt == 3:
+                    while True:
+                        u_pass = input("%-30s: " % "Enter password to register")
+                        n_pass = input("%-30s: " % "Retype password again to confirm")
+                        if u_pass == n_pass:
+                            passcheck = bytes(f"passcheck:{n_pass}:{name}", "utf-8")
+                            client = self.run_client()
+                            client.send(passcheck)
+                            flag = client.recv(1024).decode("utf-8")
+                            if flag == "1":
+                                print("You Entered current password! Please enter a new password.")
+                            else:
+                                tosend = f"info_change:{name}:{mail}:{n_pass}:{name}".encode('utf-8')
+                                client = self.run_client()
+                                client.send(tosend)
+                                print(f"Your new Password {n_pass} is updated! Login back")
+                                self.login()
+
+                        else:
+                            print("Passwords do not match! Try again.")
+
+                elif opt == 4:
+                    self.profile_page(r_data)
+                else:
+                    print("Invalid Number! Choose again.")
+            except Exception as err:
+                print(err, "\nEnter only number!")
 
     def email_validation(self, u_mail):
         global domain, mail_name, j

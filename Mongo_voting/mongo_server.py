@@ -33,7 +33,7 @@ class mongo_server:
             client_input = client_input.decode("utf-8").split(":")
             try:
                 if len(client_input) > 0:
-                    print("Received Data: ", client_input[0])
+                    print("Received Data: ", client_input)
                     if client_input[0] == "gad":
                         self.get_all_data(c_choice)
                     elif client_input[0] == "ureg" or len(client_input) == 8:
@@ -72,14 +72,16 @@ class mongo_server:
                         self.c_money_update(client_input)
                     elif client_input[0] == "get_udata":
                         self.get_udata(c_choice, client_input)
-                    elif client_input[0] == "get_udata_mail":
-                        self.get_udata_mail(c_choice,client_input)
+                    elif client_input[0] == "info_change":
+                        self.user_info_change(client_input)
                     elif client_input[0] == "get_cdata":
                         self.get_cdata(c_choice, client_input)
                     elif client_input[0] == "candi_up":
                         self.candidate_update(client_input)
                     elif client_input[0] == "get user data":
                         self.get_all_udata(c_choice)
+                    elif client_input[0] == "passcheck":
+                        self.pass_check(client_input, c_choice)
                     else:
                         print("Invalid choice.")
                         print(client_input)
@@ -114,18 +116,13 @@ class mongo_server:
 
     def get_udata(self, c_choice, client_input):
         name = client_input[1]
+        print(name)
         for i in col1.find({"name": name}, {"_id": 1, "mail": 1, "name": 1, "password": 1, "money": 1, "points": 1}):
-            sms = f"{i['name']},{i['money']},{i['points']},{i['mail']}"
+            sms = f"{i['name']},{i['money']},{i['points']},{i['mail']},{i['password']}"
             str_data = bytes(sms, 'utf-8')
             print(str_data)
             c_choice.send(str_data)
-    def get_udata_mail(self,c_choice,client_input):
-        mail = client_input[1]
-        for i in col1.find({"mail": mail}, {"_id": 1, "mail": 1, "name": 1, "password": 1, "money": 1, "points": 1}):
-            sms = f"{i['name']},{i['money']},{i['points']},{i['mail']}"
-            str_data = bytes(sms, 'utf-8')
-            print(str_data)
-            c_choice.send(str_data)
+
     def get_cdata(self, c_choice, client_input):
         name = client_input[1]
         for i in col.find({"name": name}, {"_id": 1, "mail": 1, "name": 1, "password": 1, "money": 1, "v_points": 1}):
@@ -142,9 +139,9 @@ class mongo_server:
             c_id.append(i["_id"])
             print(c_id)
         if c_id[-1] == 0:
-            id = 1
+            _id = 1
         else:
-            id = c_id[-1] + 1
+            _id = c_id[-1] + 1
 
         u_mail = client_input[0]
         u_name = client_input[1]
@@ -156,7 +153,7 @@ class mongo_server:
         money = 0
         voter = []
         print(client_input)
-        db = {"_id": id, "mail": u_mail, "name": u_name, "password": u_pass, "phone": int(phone),
+        db = {"_id": _id, "mail": u_mail, "name": u_name, "password": u_pass, "phone": int(phone),
               "age": int(age), "v_mark": int(mark), "v_points": int(points), "money": int(money), "voter": voter}
 
         col.insert_one(db)
@@ -243,6 +240,32 @@ class mongo_server:
         col1.update_one({"name": name}, {"$set": {"points": int(points)}})
         col1.update_one({"name": u_name}, {"$set": {"points": int(upoints)}})
 
+    def pass_check(self, client_input, c_choice):
+        n_pass = client_input[1]
+        name = client_input[2]
+        flag = -1
+        for i in col1.find({"name": name}, {"password": 1}):
+            if i["password"] == n_pass:
+                flag = 1
+            else:
+                flag = 0
+
+        if flag == 1:
+            str_data = bytes("1", 'utf-8')
+            c_choice.send(str_data)
+
+        else:
+            str_data = bytes("0", 'utf-8')
+            c_choice.send(str_data)
+
+    def user_info_change(self, client_input):
+        n_name = client_input[1]
+        mail = client_input[2]
+        password = client_input[3]
+        name = client_input[4]
+        print(name, mail, password)
+        col1.update_one({"name": name}, {"$set": {"mail": mail, "name": n_name, "password": password}})
+
     def c_money_update(self, client_input):
         n_money = client_input[1]
         n_points = client_input[2]
@@ -273,8 +296,8 @@ class mongo_server:
                         flag = 1
                         break
                     else:
-                        for i in col.find({}, {"_id": 0, "mail": 1, "name": 1}):
-                            if i["mail"] == u_email or i["name"] == u_name:
+                        for j in col.find({}, {"_id": 0, "mail": 1, "name": 1}):
+                            if j["mail"] == u_email or j["name"] == u_name:
                                 flag = 1
                                 break
                 if flag == 1:
@@ -286,30 +309,6 @@ class mongo_server:
             except Exception as err:
                 err = bytes(str(err), 'utf-8')
                 c_choice.send(err)
-
-    # def c_exist(self, c_choice, client_input):
-    #     print("testing candidate exit")
-    #     u_email = client_input[1]
-    #     u_name = client_input[2]
-    #     flag = -1
-    #     if col.count_documents({}) == 0:
-    #         str_data = bytes("0", 'utf-8')
-    #         c_choice.send(str_data)
-    #     else:
-    #         try:
-    #             for i in col.find({}, {"_id": 0, "mail": 1, "name": 1}):
-    #                 if i["mail"] == u_email or i["name"] == u_name:
-    #                     flag = 1
-    #                     break
-    #             if flag == 1:
-    #                 str_data = bytes("1", 'utf-8')
-    #                 c_choice.send(str_data)
-    #             else:
-    #                 str_data = bytes("0", 'utf-8')
-    #                 c_choice.send(str_data)
-    #         except Exception as err:
-    #             err = bytes(str(err), 'utf-8')
-    #             c_choice.send(err)
 
 
 if __name__ == "__main__":
