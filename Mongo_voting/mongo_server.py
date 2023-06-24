@@ -82,6 +82,8 @@ class mongo_server:
                         self.get_all_udata(c_choice)
                     elif client_input[0] == "passcheck":
                         self.pass_check(client_input, c_choice)
+                    elif client_input[0] == "del":
+                        self.deletion(client_input)
                     else:
                         print("Invalid choice.")
                         print(client_input)
@@ -309,6 +311,10 @@ class mongo_server:
             except Exception as err:
                 err = bytes(str(err), 'utf-8')
                 c_choice.send(err)
+
+    def deletion(self, client_input):
+        name = client_input[1]
+        col1.delete_one({"name":name})
 
 
 if __name__ == "__main__":

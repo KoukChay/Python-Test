@@ -358,18 +358,18 @@ class mongo_client:
         print(f'Welcome {name} (Your money: ${money},'
               f' Your points: {points})')
         try:
-            c_pointa = int(input("%-30s: " % "Enter amount of point you want to change<1point = $5>"))
-            if points >= c_pointa:
-                points -= c_pointa
-                money += (c_pointa * 5)
-                print(f'Congratulation! You own now ${money}')
+            c_points = int(input("%-30s: " % "Enter amount of point you want to change<1point = $5>"))
+            if points >= c_points:
+                points -= c_points
+                money += (c_points * 5)
+                print(f'Congratulation! You have changed ${c_points*5} and You totally own ${money} now.')
 
                 sms = f"c_up:{money}:{points}:{name}".encode('utf-8')
                 client = self.run_client()
                 client.send(sms)
                 try:
                     while True:
-                        opt = int(input("Press <1> to change more OR press <2> to go Main page."))
+                        opt = int(input("Press <1> to change more.\nPress <2> to go Main page.\n==>"))
                         if opt == 1:
                             self.candidate_profile_page(r_data)
                             break
@@ -406,8 +406,7 @@ class mongo_client:
             while True:
                 opt = int(input(
                     "Press 1 to buy points to vote\nPress 2 to vote\nPress 3 to transfer your points\nPress 4 to "
-                    "change your information\nPress 5 to go "
-                    "Main Page\n==>"))
+                    "change your information\nPress 5 to Delete account\nPress 6 to go Main Page\n==>"))
                 if opt == 1:
                     self.point_shop(r_data)
                 elif opt == 2:
@@ -417,8 +416,9 @@ class mongo_client:
                 elif opt == 4:
                     self.change_info(sms, r_data, n_data)
                 elif opt == 5:
+                    self.acc_del(n_data,r_data)
+                elif opt == 6:
                     self.check_input()
-
                 else:
                     print("Invalid Option! Please try again.")
 
@@ -652,8 +652,8 @@ class mongo_client:
                 elif opt == 2:
 
                     while True:
-                        f_name = input("%-30s: " % "Enter your First Name")
-                        l_name = input("%-30s: " % "Enter your Last Name")
+                        f_name = input("%-30s: " % "Enter your First New Name")
+                        l_name = input("%-30s: " % "Enter your Last New Name")
                         n_name = f_name.title() + ' ' + l_name.title()
                         name_check = self.user_exist(None, n_name, sms="ureg")
                         if name_check is not None:
@@ -706,6 +706,26 @@ class mongo_client:
                     print("Invalid Number! Choose again.")
             except Exception as err:
                 print(err, "\nEnter only number!")
+
+    def acc_del(self,n_data,r_data):
+        upass = n_data[4]
+        while True:
+            try:
+                c_pass = input("Enter your password to confirm for deletion!")
+                if upass == c_pass:
+                    name = f"del:{n_data[0]}".encode('utf-8')
+                    client = self.run_client()
+                    client.send(name)
+                    print("Your account was successfully deleted")
+                    self.check_input()
+                    break
+                elif c_pass == "q":
+                    self.profile_page(r_data)
+                else:
+                    print("Invalid password! Please try again. <OR> Enter 'q' to Quit.")
+            except Exception as err:
+                print(err)
+
 
     def email_validation(self, u_mail):
         global domain, mail_name, j
