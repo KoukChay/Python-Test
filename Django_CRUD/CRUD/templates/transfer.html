@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'transfer.css' %}">
+    <title>Transfer</title>
+</head>
+<body>
+<section class="container">
+    <form class="transfer" method="post">
+        {% csrf_token %}
+        {% if err %}
+        <p id="err">{{ err }}</p>
+        {% endif %}
+        <header>Transfer Section</header>
+        <p>Select Accounts to Transfer</p>
+
+        <div class="label">
+            {% for l_user in data_list %}
+            <label>
+                <input class="radio" type="radio" name="opt" value="{{ l_user.mail }}">
+                {{ l_user.mail }}
+            </label><br>
+            {% endfor %}
+        </div>
+        <input class="num_box" type="number" placeholder="Enter amount to Transfer" name="t_money" autofocus
+               required>
+        <div class="button">
+            <a href="{% url 'userpf' %}">Cancel</a>
+            <button type="submit">Submit</button>
+        </div>
+
+    </form>
+</section>
+</body>
+</html>

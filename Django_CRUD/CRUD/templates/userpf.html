@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'userpf.css' %}">
+    <title>UserProfile</title>
+</head>
+<body>
+<section class="container">
+    <form class="user_pf" method="post">
+        {% csrf_token %}
+        <header>Profile Section</header>
+        {% if l_user %}
+        <p>Email: {{ l_user.mail }}<br> Password: {{ l_user.password }}<br> Money: {{ l_user.money }} </p>
+        {% endif %}
+        <div>
+            <label>
+                <input type="radio" name="opt" value="Deposit">
+                Deposit
+            </label><br>
+
+            <label>
+                <input type="radio" name="opt" value="Transfer Point">
+                Transfer Money
+            </label><br>
+
+            <label>
+                <input type="radio" name="opt" value="Reset Password">
+                Reset Password
+            </label><br>
+
+            <label>
+                <input type="radio" name="opt" value="Delete Account">
+                Delete Account
+            </label><br>
+            <div class="button">
+                <a href="{% url 'login' %}">Exit</a>
+                <button type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+</section>
+
+</body>
+</html>

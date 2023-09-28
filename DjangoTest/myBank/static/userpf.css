@@ -1,0 +1,329 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+{% load static %}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.container{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url("/static/imgs/userpf.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+
+
+}
+
+.nav{
+    position:absolute;
+    display: flex;
+    /* flex-direction: row;
+    row-gap: 50px; */
+    justify-content:center;
+    background-color: #024e87;
+    background-size: cover;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    font-size: 3vw;
+    font-weight: 600;
+    text-shadow:2px 3px 3px rgba(0, 0, 0, 0.641);
+    row-gap: 90px;
+}
+
+.pp{
+    position: absolute;
+    margin-top: -0.1%;
+    padding-right: 70%;
+    text-decoration: none;
+    color: #024e87;
+    text-shadow:3px 4px 3px #000000f4;
+}
+
+.wc{
+    position: relative;
+    text-align: justify;
+    color: cadetblue;
+    text-shadow: 0px 0px 10px  #000000;
+}
+.fa-user{
+    position: absolute;
+    left: 2%;
+    text-decoration: none;
+    padding-top: 0.3%;
+    font-size: 3vw;
+    color: #024e87;
+    text-shadow:2px 3px 2px #03fffff4;
+}
+.menu{
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.menu li{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: -50%;
+    list-style: none;
+    color: #0bcfed;
+    transform-origin: 200px;
+    transition:0.5s;
+    transition-delay: calc(0.25s * var(--i) );
+    transform: rotate(0deg) translateX(160px) ;
+
+}
+.menu li :hover{
+    color: rgba(255, 2, 129, 0.625);
+}
+.menu.active li{
+    transform: rotate(calc(360deg / 4 * var(--i)));
+}
+.menu li a {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 40px;
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    color: rgba(25, 3, 125, 0.921);
+    background-color: #0bcfed;
+    transform: rotate(calc(360deg / -4 * var(--i)));
+    box-shadow: 0px 0px 10px rgb(255, 63, 159);
+}
+.toggle{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    background-color: rgb(25, 3, 125);
+    box-shadow: 0px 0px 10px #0bcfed;
+    z-index: 100;
+    font-size: 60px;
+    font-weight: bolder;
+    color: #0bcfed;
+    cursor: pointer;
+    transition: transform 2s;
+}
+.toggle :hover{
+    color: deeppink;
+}
+.menu.active .toggle{
+    transform: rotate(270deg);
+}
+
+.pop.up ,
+.tpop.up{
+    opacity: 0;
+    pointer-events: none;
+}
+
+.container.pop-up.npop .pop.up {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.container.pop-up .tpop.up{
+    z-index: -10;
+    opacity: 0;
+    pointer-events: none;
+}
+.container.pop-up .pop.up{
+    z-index: 10;
+    opacity: 1;
+    pointer-events: auto;
+}
+.container.pop-up  .menu{
+    pointer-events: none;
+    filter: blur(6px);
+}
+
+.container.pop-up.npop-up .tpop.up{
+    z-index: -10;
+    opacity: 0;
+    pointer-events: none;
+}
+.container.pop-up.npop-up .pop.up{
+    z-index: 10;
+    opacity: 1;
+    pointer-events: auto;
+}
+.container.pop-up.npop-up  .menu{
+    pointer-events: none;
+    filter: blur(6px);
+}
+
+.container.tpop-up .tpop.up{
+    z-index: 10;
+    opacity: 1;
+    pointer-events: auto;
+}
+.container.tpop-up .pop.up{
+    opacity: 0;
+    pointer-events: none;
+}
+.container.tpop-up  .menu{
+    pointer-events: none;
+    filter: blur(6px);
+}
+.pop.up,
+.tpop.up {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    top: 20%;
+    left: 5%;
+    width: 30%;
+    min-width: 400px;
+    padding: 20px;
+    border: 3px solid #00f7de2a;
+    border-radius: 6px;
+    backdrop-filter: blur(3px);
+    background-color: rgba(74, 90, 176, 0.125);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.168);
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+.pop.up #amount,
+.tpop.up #amount{
+    width: 70%;
+    font-size: 20px;
+    font-weight: bolder;
+    border: 2px solid #00ff22;
+    border-radius: 6px;
+    backdrop-filter: blur(3px);
+    background-color: #0b8f8d;
+    color: #ccecf7;
+    padding: 0 15px;
+}
+.pop.up #pop{
+    color: #00ff22;
+}
+::placeholder{
+    color: aliceblue;
+    font-size:medium;
+}
+.pop.up #radioContainer{
+
+    text-indent: 0;
+    padding-left: 10%;
+    text-align: left;
+    position: relative;
+    font-size: 22px;
+    color: rgb(3, 230, 255);
+}
+.pop.up #radioContainer label{
+    margin-left: 10px;
+    text-decoration: underline;
+    cursor: pointer;
+
+
+}
+.pop.up #radioContainer input{
+    cursor: pointer;
+
+}
+
+.pop.up #pop-err,
+.tpop.up #tpop-err{
+    position: relative;
+    font-size: 14px;
+    color: rgb(255, 3, 3);
+}
+.pop.up .button,
+.tpop.up .button{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 50px;
+    margin: auto;
+    width: 80%;
+    /* margin-top: -20px; */
+}
+
+.pop.up button,
+.tpop.up button{
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin-top: 30px;
+    border: 2px solid#00fce3;
+    border-radius: 20px;
+    font-size: 15px;
+    background-color: #364958;
+    color: rgb(0, 199, 106);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 3px;
+}
+
+.pop.up .button .cancle,
+.tpop.up .button .tcancle {
+    color: red;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+}
+
+.pop.up .button .ok:hover,
+.tpop.up .button .tok:hover{
+    font-weight: 500;
+    border: 2px solid rgb(0, 199, 106);
+    background-color: #364958;
+}
+.pop.up .button .cancle:hover ,
+.tpop.up .button .tcancle:hover {
+    font-weight: 500;
+    border: 2px solid red;
+    background-color: #364958;
+}
+.pop.up button:active ,
+.tpop.up button:active {
+    font-weight: 500;
+    border: 2px solid#21897e;
+    background-color: #364958;
+    color: #21897e;
+}
+
+
+
+
+
+
+@media screen and (max-width: 400px) {
+    .container {
+        padding: 15px 10px;
+    }
+}
+
+@media screen and (max-width: 1120px) {
+    .nav{
+        font-size: 3.6vw;
+    }
+    .fa-user {
+        font-size: 3.6vw;
+        left: 0.5%;
+    }
+}

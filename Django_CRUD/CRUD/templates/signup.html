@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'signup.css' %}">
+    <title>SignUp</title>
+</head>
+<body>
+<section class="container">
+    <form class="signup" method="post" action="{% url 'signup' %}">
+        {% csrf_token %}
+        <header>Signup</header>
+        {% if exist %}
+        <p id="err">{{ exist }}</p>
+        {% endif %}
+        {% if done %}
+        <p id="done">{{ done }}</p>
+        {% endif %}
+        <input  type="email" placeholder="Enter Email" name="email" id="smail" autofocus required><br>
+        <input class="password" type="password" placeholder="Enter Password" name="password" id="spass1" required>
+        <i class="bx bxs-hide eye-icon"></i>
+        <input class="password" type="password" placeholder="Confirm Password" name="c_password" id="spass2" required>
+        <i class="bx bxs-hide eye-icon"></i>
+        <div id="p-error"></div>
+        <button type="submit">Submit</button>
+        <span style="font-size:13px;">Already have an account? <a href="{% url 'login' %}" style="color:white;"
+                                                                  class="link Login-link">Login</a></span>
+
+    </form>
+</section>
+<script src="{% static 'js/signup.js' %}"></script>
+</body>
+</html>

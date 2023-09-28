@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        {% load static %}
+    <link rel="stylesheet" href="{% static 'userpf.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="pop up">
+            <div id="pop"></div>
+            <div id="radioContainer"></div>
+            <div id="pop-err" ></div>
+            <div class="button">
+                <button onclick="window.location.href = '';" class="cancle">Cancle</button>
+                <button class="ok">Ok</button>
+            </div>
+        </div>
+
+        <div class="tpop up">
+            <div id="tpop"></div>
+            <div id="tpop-err" ></div>
+            <!-- <div id="radioContainer"></div> -->
+            <div class="button">
+                <button onclick="window.location.href = '';" class="tcancle">Cancle</button>
+                <button class="tok">Ok</button>
+            </div>
+        </div>
+
+        <div class="nav">
+            <i class="fa-solid fa-user"></i>
+            <p class="pp">Profile Page</p>
+            <p class="wc">Welcome Boss</p>
+                
+        </div>   
+
+            <div class="menu">
+                <div class="toggle">
+                    <i class="fa-solid fa-plus fa-beat-fade" title="Menu"></i>
+                </div>
+
+                <li style="--i:1;">
+                    <a href="#"><i class="fa-solid fa-circle-dollar-to-slot deposit" title="Deposit"></i>
+                    </a>
+                </li>
+
+                <li style="--i:2;">
+                    <a href="#"><i class="fa-solid fa-user-xmark" title="Delete Account"></i>
+                    </a>
+                </li>
+
+                <li style="--i:3;">
+                    <a href="#"><i class="fa-solid fa-money-bill-transfer" title="Transfer Money"></i>
+                    </a>
+                </li>
+
+                <li style="--i:4;">
+                    <a href=""><i class="fa-solid fa-right-from-bracket fa-flip-horizontal"
+                            title="Log Out"></i>
+                    </a>
+                </li>
+            </div>
+        
+    </div>
+    <script src="{% static 'userpf.js' %}"></script>
+    <!-- <script src="../Home/script.js"></script> -->
+</body>
+
+</html>
+

@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+{% load static %}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body{
+height:100vh;
+background: linear-gradient(to bottom right, #0066ff 0%, #cc3399 100%);
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.signup{
+    position:relative;
+    border: 2px solid #35e200f3;
+    background-color: #00e2bc41;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width:400px;
+    border-radius:20px;
+    padding: 30px;
+    padding-top:0;
+    transition: all 0.3s ease;
+}
+header{
+position: relative;
+margin: 30px;
+font-size: 25px;
+font-weight:500;
+color: #35e200f3;
+}
+
+input{
+    width: 80%;
+    height: 40px;
+    border: 2px solid #005166;
+    border-radius: 5px;
+    padding: 0 15px;
+}
+input:focus{
+    outline: none;
+    border-bottom-width: 3px;
+}
+.eye-icon {
+    position: relative;
+    bottom: 20px;
+    left:115px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #21897e;
+    cursor: pointer ;
+    padding: 5px;
+}
+.signup #p-error {
+    position: absolute;
+    top:70%;
+    color: #ea0619;
+    text-shadow: 0px 0px 3px black;
+    font-size: 14px;
+    font-weight: 400;
+}
+button{
+    color: #35e200f3;
+    font-size:18px;
+    font-weight: 500;
+    width:40%;
+    height: 35px;
+    margin:10px;
+    background:linear-gradient(to bottom right, #0066ff 0%, #cc3399 65%);
+    border: 2px solid #005166;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+}
+button:hover{
+    background:linear-gradient(to right bottom , #cc3399 0%, #0066ff 100%);
+    border: 3px solid #005166;
+
+}
+
+button:active{
+    color: #0066ff;
+    background:#cc3399;
+    border: 3px solid #35e200f3;
+}
+#err{
+    position:relative;
+    display:flex;
+    justify-content:flex-start;
+    padding-bottom:5px;
+    font-size:16px;
+    color:#be0000;
+    text-shadow: 0px 0px 3px #000000d6;
+}
+#done{
+    margin-right:110px;
+    font-size:16px;
+    color:#35e200f3;
+    text-shadow: 0px 0px 3px #000000d6;
+}

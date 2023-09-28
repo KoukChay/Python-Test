@@ -1,0 +1,401 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+{% load static %}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #364958;
+    background-image: url("/static/imgs/home.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    column-gap: 30px;
+}
+
+.nav {
+    position: fixed;
+    white-space: nowrap;
+    top: 0;
+    text-align: left;
+    background-color: #072b47;
+    width: 100%;
+    display: flex;
+    border-bottom-left-radius: 20px;
+
+}
+
+.nav_text {
+    position: absolute;
+    justify-content: center;
+    align-content: center;
+    padding-top: 0.7%;
+    /* left: 3.5%; */
+    padding-left: 5%;
+    color: #21897e;
+    text-decoration: none;
+    text-shadow: -2px -2px 4px #0f0110;
+    font-size: 3vw;
+    font-weight: 600;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.bxs-bank {
+    font-size: 4vw;
+    padding-left: 0.6%;
+    top: 6%;
+    color: #21897e;
+    text-shadow: -2px -2px 4px #0f0110;
+}
+
+.form {
+    position: absolute;
+    max-width: 420px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 6px;
+    backdrop-filter: blur(3px);
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.168);
+    transition: ease 0.5s;
+}
+
+.form.signup {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.lpop.up,
+.pop.up {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.forms.pop-up .pop.up {
+    z-index: 10;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.forms.lpop-up .lpop.up {
+    z-index: 10;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.forms.lpop-up form,
+.forms.lpop-up header,
+.forms.pop-up form,
+.forms.pop-up header {
+    pointer-events: none;
+    filter: blur(6px);
+}
+
+.forms.pop-up .lpop.up {
+    z-index: -10;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.forms.show-hide .form.signup {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.forms.show-hide .form.login {
+    opacity: 0;
+    pointer-events: none;
+    filter: blur(6px);
+}
+
+
+header {
+    font-size: 24px;
+    font-weight: 600;
+    color: #3ba99c;
+    text-align: center;
+    text-shadow: 0px 0px 1px #0f0110;
+}
+
+form {
+    margin-top: 30px;
+}
+
+form .field {
+    position: relative;
+    height: 35px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.pop.up {
+    position: absolute;
+    max-width: 250px;
+    text-align: center;
+    width: 50%;
+    padding: 20px;
+    border: 3px solid #00f7de2a;
+    border-radius: 6px;
+    backdrop-filter: blur(3px);
+    background-color: rgba(74, 90, 176, 0.125);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.168);
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+.pop.up p {
+    font-size: 20px;
+    font-weight: 500;
+    text-shadow: 0px 0px 5px #01ffe693;
+    color: #21897e;
+}
+
+.pop.up button {
+    width: 50%;
+    margin-top: 20px;
+    border: 1px solid#87bba2;
+    border-radius: 20px;
+    background-color: #364958;
+    color: #87bba2;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 5px;
+}
+
+
+.field input,
+.field button {
+    font-size: 16px;
+    font-weight: 400;
+    height: 100%;
+    width: 100%;
+    border: none;
+    border-radius: 6px;
+}
+
+.field input {
+    outline: none;
+    padding: 0 15px;
+    border: 1px solid #87bba2;
+
+
+}
+
+.field input:focus {
+    border-bottom-width: 3px;
+}
+
+.field button:focus {
+    border-bottom-color: #04358f;
+    border-bottom-width: 3px;
+}
+
+#error {
+    position: relative;
+    color: #ea0619;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.form.signup #p-error {
+    position: relative;
+    color: #ea0619;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+
+.eye-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #21897e;
+    cursor: pointer;
+    padding: 5px;
+
+}
+
+
+.field button {
+    margin-top: 5px;
+    border: 1px solid#87bba2;
+    background-color: #364958;
+    color: #87bba2;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+}
+
+.form.signup .field button {
+    margin-top: 15px;
+}
+
+.pop.up button:hover,
+.field button:hover {
+    font-weight: 500;
+    border: 1px solid#364958;
+    background-color: #87bba2;
+    color: #364958;
+}
+
+.pop.up button:active,
+.field button:active {
+    font-weight: 500;
+    border: 1px solid#21897e;
+    background-color: #364958;
+    color: #21897e;
+}
+
+.form-link {
+    color: #04358f;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: -10px;
+}
+
+.form.signup .form-link {
+    margin-top: 30px;
+    margin-bottom: -10px;
+}
+
+.form-link span,
+.form-link a {
+    font-size: 14px;
+    font-weight: 400;
+
+}
+
+.form a {
+    color: #364958;
+    text-decoration: none;
+}
+
+.form a:hover {
+    color: #f07171;
+    text-decoration: underline;
+    transition: linear;
+
+}
+
+.lpop.up {
+    display: flex;
+    position: relative;
+    justify-self: center;
+    align-self: center;
+    flex-direction: column;
+    text-align: center;
+    width: 30%;
+    min-width: 400px;
+    max-width: fit-content;
+    padding: 20px;
+    border: 3px solid #00f7de2a;
+    border-radius: 6px;
+    backdrop-filter: blur(3px);
+    background-color: rgba(74, 90, 176, 0.125);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.168);
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+.lpop.up input {
+    display: flex;
+    width: 70%;
+    margin-left: 55px;
+    font-size: 20px;
+    font-weight: bolder;
+    border: 2px solid #00ff22;
+    border-radius: 6px;
+    backdrop-filter: blur(3px);
+    background-color: #0b8f8d;
+    color: #ccecf7;
+    padding: 0 15px;
+}
+
+.lpop.up #lpop {
+    color: #00ff22;
+    padding-bottom: 20px;
+}
+
+.lpop.up ::placeholder {
+    color: aliceblue;
+    font-size: medium;
+}
+
+.lpop.up .eye-icon {
+    position: absolute;
+
+    top: 58.5%;
+    right: 80px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #013b3b;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.lpop.up .button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 50px;
+    margin: auto;
+    width: 80%;
+}
+
+
+.lpop.up button {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin-top: 30px;
+    border: 2px solid#00fce3;
+    border-radius: 20px;
+    font-size: 15px;
+    background-color: #364958;
+    color: rgb(0, 199, 106);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 3px;
+}
+
+.lpop.up .button .cancle {
+    color: red;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+}
+
+.lpop.up .button .ok:hover {
+    font-weight: 500;
+    border: 2px solid rgb(0, 199, 106);
+    background-color: #364958;
+}
+
+.lpop.up .button .cancle:hover {
+    font-weight: 500;
+    border: 2px solid red;
+    background-color: #364958;
+}
+
+.lpop.up button:active {
+    font-weight: 500;
+    border: 2px solid#21897e;
+    background-color: #364958;
+    color: #21897e;
+}
+
+@media screen and (max-width: 400px) {
+    .form {
+        padding: 15px 10px;
+    }
+}

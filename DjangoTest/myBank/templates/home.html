@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIP Bnk</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+</head>
+
+<body>
+
+    <section class="container forms">
+        <nav class="nav">
+            <i class='bx bxs-bank'></i>
+            <div class="nav_text">DIP Bank</div>
+        </nav>
+        <div class="pop up">
+            <p id="pop">Your email : {{email}} <br> Your password : {{password}}</p>
+
+            <button onclick="window.location.href='';">Ok</button>
+        </div>
+        <div  class="lpop up">
+            <p id="lpop">Reset your password here!</p>
+            <div class="field input-field">
+                <input type="email" placeholder="Enter email" class="input" id="cemail" name="" required/>
+            </div>
+            <br>
+            <div class="field input-field">
+                <input type="password" placeholder="Enter password" class="password" id="npass" required/>
+                <i class="bx bxs-hide eye-icon"></i>
+            </div>
+            <div class="button">
+                <button class="cancle" onclick="window.location.href='{% static 'home.css' %}';">Cancle</button>
+
+                <button id="ok" class="ok">Ok</button>
+
+            </div>
+        </div>
+        <!--Sign up form-->
+
+        <div class="form signup" id="signUp">
+            <div class="form-content">
+                <header>Sign Up</header>
+
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <div class="field input-field">
+                        <input type="email" placeholder="Enter email" class="input" id="semail" name="semail" required>
+                    </div>
+
+                    <div class="field input-field">
+                        <input type="password" placeholder="Enter password" class="password" id="spass1" name="spass1" required>
+                        <i class="bx bxs-hide eye-icon"></i>
+                    </div>
+
+                    <div class="field input-field">
+                        <input type="password" placeholder="Confirm password" class="password" id="spass2" required>
+                        <i class="bx bxs-hide eye-icon"></i>
+                        <div id="p-error"></div>
+                    </div>
+
+                    <div class="field button-field">
+                        <button type="submit" value="Signup">Sign Up</button>
+                    </div>
+
+                    <div class="form-link">
+                        <span>Already have an account? <a href="#" class="link Login-link">Login</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- For Login -->
+
+        <div class="form login">
+            <div class="form-content">
+                <header>Login</header>
+
+                <form id='login'>
+                    <div class="field input-field">
+                        <input type="email"  placeholder="Enter email" class="input" id="linput" required autofocus/>
+
+                    </div>
+
+                    <div class="field input-field">
+                        <input type="password" placeholder="Enter password" class="password" id="lpss" required>
+                        <div id="error"></div>
+                        <i class="bx bxs-hide eye-icon"></i>
+                    </div>
+
+                    <div class="form-link">
+                        <a href="#" class="forgot-pass">Forgot password?</a>
+                    </div>
+
+                    <div class="field button-field">
+                        <button >Login</button>
+                    </div>
+
+                    <div class="form-link">
+                        <span class="not-link">Don't have an account yet? <a href="#" class="link sing-up" name="signup-link">Sign
+                                Up</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+<script src="{% static 'home.js' %}"></script>
+</body>
+
+</html>
