@@ -1,0 +1,48 @@
+{
+    "Name": "The Mask",
+    "Genre": "Comedy",
+    "Year": 2001,
+    "Length": "2hr21min"
+  }
+
+{
+    "Name": "The Num",
+    "Genre": "Horror",
+    "Year": 2023,
+    "Length": "2hr21min"
+  }
+
+{
+  "Name": "Crimson Veil",
+  "Genre": "Horror",
+  "Year": 2001,
+  "Length": "2hr15min"
+}
+
+{
+  "Name": "Ethereal Echoes",
+  "Genre": "Horror",
+  "Year": 2022,
+  "Length": "2hr10min"
+}
+
+{
+  "Name": "Fury's Edge",
+  "Genre": "Action",
+  "Year": 2022,
+  "Length": "2hr30min"
+}
+{
+  "Name": "Laugh Riot",
+  "Genre": "Comedy",
+  "Year": 2022,
+  "Length": "1hr58min"
+}
+{
+  "Name": "Shadow Strike",
+  "Genre": "Action",
+  "Year": 2023,
+  "length": "2hr05min"
+}
+
+
